@@ -2,7 +2,7 @@ const axios = require('axios');
 require('dotenv').config(); // Load environment variables
 const sendEmail = async (to, subject, html) => {
   const data = {
-    sender: { email: process.env.SENDINBLUE_EMAIL },
+    sender: {name: "Reachly", email: process.env.SENDINBLUE_EMAIL },
     to: [{ email: to }],
     subject: subject,
     htmlContent: html,
