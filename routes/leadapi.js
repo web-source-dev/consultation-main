@@ -45,9 +45,38 @@ router.post('/vendor', async (req, res) => {
         </body>
       </html>
     `;
+    const adminEmailText = `
+  <html>
+    <body>
+      <h2>New Vendor Registration – Action Required</h2>
+      <p>Dear Admin,</p>
+      <p>We are pleased to inform you that a new vendor has successfully signed up on Reachly:</p>
+      <ul>
+        <li><strong>Name:</strong> ${vendor.firstName} ${vendor.lastName}</li>
+        <li><strong>Email:</strong> ${vendor.email}</li>
+        <li><strong>Company:</strong> ${vendor.companyName}</li>
+        <li><strong>Sign-Up Date:</strong> ${new Date().toLocaleDateString()}</li>
+      </ul>
+      <p>As the admin, you are now responsible for reviewing the vendor's profile and assigning relevant leads to them. Please follow these next steps:</p>
+    <ol>
+      <li>Log into the admin dashboard to access the vendor’s profile.</li>
+      <li>Review the matched leads that the platform has automatically assigned based on the vendor’s profile and preferences.</li>
+      <li>Confirm the matched leads and ensure they are appropriate for the vendor.</li>
+      <li>Assign the leads to the vendor so they can begin engaging with them through their dashboard.</li>
+      <li>Verify that the vendor has proper access to their Vendor Dashboard and ensure their onboarding is complete.</li>
+      </ol>
+      <p>Once the leads are assigned, the vendor will be able to track and engage with them directly through their dashboard.</p>
+      <p>If you have any internal questions or need to review the process further, please refer to the admin documentation or check the internal guidelines for lead assignment.</p>
+      <p>Thank you for ensuring smooth onboarding for our new vendor!</p>
+      <p>Best regards,</p>
+      <p>The Reachly Team</p>
+    </body>
+  </html>
+`;
+
 
     await sendEmail(vendor.email.trim(), 'Welcome to Reachly – Set Up Your Vendor Dashboard', vendorEmailText);
-    await sendEmail('contact@reachly.ca', 'New Vendor Registration - Admin Notification', vendorEmailText);
+    await sendEmail('contact@reachly.ca', 'New Vendor Registration - Admin Notification', adminEmailText);
 
     // Respond to the client only after emails are sent
     res.status(201).send({ message: 'Request submitted. Please check your email for further instructions.' });
@@ -94,7 +123,28 @@ router.post('/buyer', async (req, res) => {
         </body>
       </html>
     `;
-    await sendEmail('contact@reachly.ca', 'New Buyer Registration - Admin Notification', buyerEmailText);
+    const adminBuyerEmailText = `
+  <html>
+    <body>
+      <h2>New Buyer Registration – Action Required</h2>
+      <p>Dear Admin,</p>
+      <p>We are excited to inform you that a new buyer has successfully signed up on Reachly:</p>
+      <ul>
+        <li><strong>Name:</strong> ${buyer.firstName} ${buyer.lastName}</li>
+        <li><strong>Email:</strong> ${buyer.email}</li>
+        <li><strong>Company:</strong> ${buyer.companyName}</li>
+        <li><strong>Sign-Up Date:</strong> ${new Date().toLocaleDateString()}</li>
+      </ul>
+      <p>As the admin, please review the buyer's profile and ensure that their preferences and requirements are properly recorded. This will help to ensure they are matched with the most relevant vendors.</p>
+      <p>Once the buyer’s profile is reviewed, they will be automatically matched with the most suitable vendors based on their needs, and they can begin interacting with them via their Buyer Dashboard.</p>
+      <p>Thank you for ensuring the smooth onboarding of our new buyer!</p>
+      <p>Best regards,</p>
+      <p>The Reachly Team</p>
+    </body>
+  </html>
+`;
+
+    await sendEmail('contact@reachly.ca', 'New Buyer Registration - Admin Notification', adminBuyerEmailText);
     
     await sendEmail(buyer.email, 'Welcome to Reachly! Connect with Top SaaS Vendors', buyerEmailText);
     
