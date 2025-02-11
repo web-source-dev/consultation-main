@@ -67,7 +67,6 @@ router.post('/vendor', async (req, res) => {
       </ol>
       <p>Once the leads are assigned, the vendor will be able to track and engage with them directly through their dashboard.</p>
       <p>If you have any internal questions or need to review the process further, please refer to the admin documentation or check the internal guidelines for lead assignment.</p>
-      <p>Thank you for ensuring smooth onboarding for our new vendor!</p>
       <p>Best regards,</p>
       <p>The Reachly Team</p>
     </body>
@@ -137,7 +136,6 @@ router.post('/buyer', async (req, res) => {
       </ul>
       <p>As the admin, please review the buyer's profile and ensure that their preferences and requirements are properly recorded. This will help to ensure they are matched with the most relevant vendors.</p>
       <p>Once the buyer’s profile is reviewed, they will be automatically matched with the most suitable vendors based on their needs, and they can begin interacting with them via their Buyer Dashboard.</p>
-      <p>Thank you for ensuring the smooth onboarding of our new buyer!</p>
       <p>Best regards,</p>
       <p>The Reachly Team</p>
     </body>
