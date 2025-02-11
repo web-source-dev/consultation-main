@@ -47,7 +47,7 @@ router.post('/vendor', async (req, res) => {
     `;
 
     await sendEmail(vendor.email.trim(), 'Welcome to Reachly – Set Up Your Vendor Dashboard', vendorEmailText);
-    await sendEmail('muhammadtayyab2928@gmail.com', 'New Vendor Registration - Admin Notification', vendorEmailText);
+    await sendEmail('contact@reachly.ca', 'New Vendor Registration - Admin Notification', vendorEmailText);
 
     // Respond to the client only after emails are sent
     res.status(201).send({ message: 'Request submitted. Please check your email for further instructions.' });
@@ -94,7 +94,7 @@ router.post('/buyer', async (req, res) => {
         </body>
       </html>
     `;
-    await sendEmail('muhammadtayyab2928@gmail.com', 'New Buyer Registration - Admin Notification', buyerEmailText);
+    await sendEmail('contact@reachly.ca', 'New Buyer Registration - Admin Notification', buyerEmailText);
     
     await sendEmail(buyer.email, 'Welcome to Reachly! Connect with Top SaaS Vendors', buyerEmailText);
     
