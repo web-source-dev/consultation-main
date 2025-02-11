@@ -1,30 +1,25 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 require('dotenv').config(); // Load environment variables
-
 const sendEmail = async (to, subject, html) => {
-  const transporter = nodemailer.createTransport({
-    host: 'smtp-relay.sendinblue.com',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.SENDINBLUE_EMAIL,
-      pass: process.env.SENDINBLUE_API_KEY,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.SENDINBLUE_EMAIL,
-    to: to,
+  const data = {
+    sender: { email: process.env.SENDINBLUE_EMAIL },
+    to: [{ email: to }],
     subject: subject,
-    html: html,
+    htmlContent: html,
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Message sent: %s', info.messageId);
-    return info;
+    const response = await axios.post('https://api.sendinblue.com/v3/smtp/email', data, {
+      headers: {
+        'api-key': process.env.SENDINBLUE_API_KEY,
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('response',response);
+
+    return response.data;
   } catch (error) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
