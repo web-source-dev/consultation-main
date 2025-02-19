@@ -191,8 +191,8 @@ router.get('/getdata', async (req, res) => {
 
           if (matchedServices.length > 0) {
             matchReasons.push(
-              `industryMatch: ${matchedIndustries.join(', ')}`,
-              `serviceMatch: ${matchedServices.join(', ')}`
+              industryMatch: ${matchedIndustries.join(', ')},
+              serviceMatch: ${matchedServices.join(', ')}
             );
 
             matchedVendorBuyers.push({
@@ -236,8 +236,8 @@ router.get('/getdata', async (req, res) => {
 
           if (matchedServices.length > 0) {
             matchReasons.push(
-              `industryMatch: ${matchedIndustries.join(', ')}`,
-              `serviceMatch: ${matchedServices.join(', ')}`
+              industryMatch: ${matchedIndustries.join(', ')},
+              serviceMatch: ${matchedServices.join(', ')}
             );
 
             matchedBuyerVendors.push({
@@ -311,8 +311,8 @@ router.get('/vendor/:email/matches', async (req, res) => {
           )
           .map((matchedService) => matchedService.service);
         if (matchedServices.length > 0) {
-          matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
-          matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
+          matchReasons.push(industryMatch: ${matchedIndustries.join(', ')});
+          matchReasons.push(serviceMatch: ${matchedServices.join(', ')});
         }
       }
 
@@ -366,8 +366,8 @@ router.get('/buyer/:email/matches', async (req, res) => {
           )
           .map((matchedService) => matchedService.service);
         if (matchedServices.length > 0) {
-          matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
-          matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
+          matchReasons.push(industryMatch: ${matchedIndustries.join(', ')});
+          matchReasons.push(serviceMatch: ${matchedServices.join(', ')});
         }
       }
 
@@ -413,8 +413,8 @@ router.get('/getAllVendors', async function (req, res) {
               )
               .map((matchedService) => matchedService.service);
             if (matchedServices.length > 0) {
-              matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
-              matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
+              matchReasons.push(industryMatch: ${matchedIndustries.join(', ')});
+              matchReasons.push(serviceMatch: ${matchedServices.join(', ')});
             }
           }
 
@@ -464,8 +464,8 @@ router.get('/getAllBuyers', async function (req, res) {
               )
               .map((matchedService) => matchedService.service);
             if (matchedServices.length > 0) {
-              matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
-              matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
+              matchReasons.push(industryMatch: ${matchedIndustries.join(', ')});
+              matchReasons.push(serviceMatch: ${matchedServices.join(', ')});
             }
           }
 
@@ -492,5 +492,90 @@ router.get('/getAllBuyers', async function (req, res) {
     res.status(500).send({ error: 'Error fetching buyers', details: error });
   }
 });
-   
+
+// update vendor data
+router.put('/updateVendor/:email', async function (req, res) {
+  const { email } = req.params;
+  try {
+    const vendor = await Vendor.findOne
+    ({ email: email });
+    if (!vendor) {
+      return res.status(404).send({ error: 'Vendor not found' });
+    }
+    const updatedVendor = await Vendor
+     .findOneAndUpdate(
+        { email },
+        {...req.body },
+        { new: true }
+      )
+      //.populate('selectedServices.service')
+      .exec();
+      
+    res.send({ msg: 'Vendor data updated successfully', vendor: updatedVendor });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Error updating vendor data', details: error });
+  }
+}
+);
+
+// update buyer data
+router.put('/updateBuyer/:email', async function (req, res) {
+  const { email } = req.params;
+  try {
+    const buyer = await Buyer.findOne
+    ({ email: email });
+    if (!buyer) {
+      return res.status(404).send({ error: 'Buyer not found' });
+    }
+    const updatedBuyer = await Buyer
+     .findOneAndUpdate(
+        { email },
+        {...req.body },
+        { new: true }
+      )
+      //.populate('selectedServices.service')
+      .exec();
+      
+    res.send({ msg: 'Buyer data updated successfully', buyer: updatedBuyer });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Error updating buyer data', details: error });
+  }
+}
+);
+
+// Endpoint to fetch vendor data by email
+router.get('/vendor/:email', async (req, res) => {
+  const { email } = req.params;
+  try {
+    const vendor = await Vendor.findOne({ email });
+    if (!vendor) {
+      return res.status(404).send({ error: 'Vendor not found' });
+    }
+    res.send(vendor);
+  } catch (error) {
+    res.status(500).send({ error: 'Error fetching vendor data', details: error.message });
+  }
+});
+
+// Endpoint to fetch buyer data by email
+router.get('/buyer/:email', async (req, res) => {
+  const { email } = req.params;
+  try {
+    const buyer = await Buyer.findOne({ email });
+    if (!buyer) {
+      return res.status(404).send({ error: 'Buyer not found' });
+    }
+    res.send(buyer);
+  } catch (error) {
+    res.status(500).send({ error: 'Error fetching buyer data', details: error.message });
+  }
+});
+
+// delete vendor
+
+
 module.exports = router;
