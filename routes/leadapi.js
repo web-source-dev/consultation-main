@@ -191,8 +191,8 @@ router.get('/getdata', async (req, res) => {
 
           if (matchedServices.length > 0) {
             matchReasons.push(
-              industryMatch: ${matchedIndustries.join(', ')},
-              serviceMatch: ${matchedServices.join(', ')}
+              `industryMatch: ${matchedIndustries.join(', ')}`,
+              `serviceMatch: ${matchedServices.join(', ')}`
             );
 
             matchedVendorBuyers.push({
@@ -236,8 +236,8 @@ router.get('/getdata', async (req, res) => {
 
           if (matchedServices.length > 0) {
             matchReasons.push(
-              industryMatch: ${matchedIndustries.join(', ')},
-              serviceMatch: ${matchedServices.join(', ')}
+              `industryMatch: ${matchedIndustries.join(', ')}`,
+              `serviceMatch: ${matchedServices.join(', ')}`
             );
 
             matchedBuyerVendors.push({
@@ -311,8 +311,8 @@ router.get('/vendor/:email/matches', async (req, res) => {
           )
           .map((matchedService) => matchedService.service);
         if (matchedServices.length > 0) {
-          matchReasons.push(industryMatch: ${matchedIndustries.join(', ')});
-          matchReasons.push(serviceMatch: ${matchedServices.join(', ')});
+          matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
+          matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
         }
       }
 
@@ -366,8 +366,8 @@ router.get('/buyer/:email/matches', async (req, res) => {
           )
           .map((matchedService) => matchedService.service);
         if (matchedServices.length > 0) {
-          matchReasons.push(industryMatch: ${matchedIndustries.join(', ')});
-          matchReasons.push(serviceMatch: ${matchedServices.join(', ')});
+          matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
+          matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
         }
       }
 
@@ -413,8 +413,8 @@ router.get('/getAllVendors', async function (req, res) {
               )
               .map((matchedService) => matchedService.service);
             if (matchedServices.length > 0) {
-              matchReasons.push(industryMatch: ${matchedIndustries.join(', ')});
-              matchReasons.push(serviceMatch: ${matchedServices.join(', ')});
+              matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
+              matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
             }
           }
 
@@ -464,8 +464,8 @@ router.get('/getAllBuyers', async function (req, res) {
               )
               .map((matchedService) => matchedService.service);
             if (matchedServices.length > 0) {
-              matchReasons.push(industryMatch: ${matchedIndustries.join(', ')});
-              matchReasons.push(serviceMatch: ${matchedServices.join(', ')});
+              matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
+              matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
             }
           }
 
