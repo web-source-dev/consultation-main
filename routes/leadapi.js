@@ -280,6 +280,45 @@ router.get('/getdata', async (req, res) => {
     res.status(500).send({ error: 'Error processing data', details: error });
   }
 });
+router.put('/vendor/:vendorEmail/match/:buyerEmail', async (req, res) => {
+  const { vendorEmail, buyerEmail } = req.params;
+  const { status } = req.body;
+
+  try {
+    const vendor = await Vendor.findOne({ email: vendorEmail }).populate('matchedBuyers.buyer');
+    if (!vendor) {
+      return res.status(404).json({ error: 'Vendor not found' });
+    }
+
+    const buyer = await Buyer.findOne({ email: buyerEmail });
+    if (!buyer) {
+      return res.status(404).json({ error: 'Buyer not found' });
+    }
+
+    // Find if buyer is already in matchedBuyers list
+    const matchIndex = vendor.matchedBuyers.findIndex(mb => mb.buyer._id.toString() === buyer._id.toString());
+
+    if (matchIndex !== -1) {
+      // ✅ Update status if the buyer is already in the list
+      vendor.matchedBuyers[matchIndex].status = status;
+    } else {
+      // ✅ Add new matched buyer if not found
+      vendor.matchedBuyers.push({ 
+        buyer: buyer._id, 
+        buyerEmail: buyer.email, 
+        status 
+      });
+    }
+
+    await vendor.save();
+    res.json({ message: 'Match status updated successfully', matchedBuyers: vendor.matchedBuyers });
+
+  } catch (error) {
+    console.error('Error updating match status:', error); // Add error logging
+    res.status(500).json({ error: 'Error updating match status', details: error.message });
+  }
+});
+
 
 router.get('/vendor/:email/matches', async (req, res) => {
   const { email } = req.params;
@@ -394,7 +433,7 @@ router.get('/buyer/:email/matches', async (req, res) => {
 // get all vendors 
 router.get('/getAllVendors', async function (req, res) {
   try {
-    const vendors = await Vendor.find({});
+    const vendors = await Vendor.find({})
     const buyers = await Buyer.find({});
     const vendorData = vendors.map((vendor) => {
       const matchedBuyers = buyers
@@ -429,8 +468,7 @@ router.get('/getAllVendors', async function (req, res) {
         .filter((match) => match !== null);
 
       return {
-        ...vendor.toObject(),
-        totalBuyers: matchedBuyers.length,
+        vendor,
         matchedBuyers,
       };
     });
@@ -575,7 +613,64 @@ router.get('/buyer/:email', async (req, res) => {
   }
 });
 
-// delete vendor
+router.get('/vendor/:email/match', async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    // Find the vendor by email
+    const vendor = await Vendor.findOne({ email });
+
+    if (!vendor) {
+      return res.status(404).send({ error: 'Vendor not found' });
+    }
+
+    // Find all buyers
+    const buyers = await Buyer.find({});
+    const matchedBuyers = [];
+
+    buyers.forEach((buyer) => {
+      const matchReasons = [];
+
+      // Check for industryMatch
+      const matchedIndustries = vendor.selectedIndustries.filter(
+        (industry) => buyer.industries.includes(industry)
+      );
+      if (matchedIndustries.length > 0) {
+        // Check for serviceMatch
+        const matchedServices = buyer.services
+          .filter((buyerService) =>
+            vendor.selectedServices.includes(buyerService.service)
+          )
+          .map((matchedService) => matchedService.service);
+        if (matchedServices.length > 0) {
+          matchReasons.push(`industryMatch: ${matchedIndustries.join(', ')}`);
+          matchReasons.push(`serviceMatch: ${matchedServices.join(', ')}`);
+        }
+      }
+
+      // Add to matched buyers if there are match reasons and status is not changed
+      const isStatusChanged = vendor.matchedBuyers.some(
+        (matchedBuyer) => matchedBuyer.buyerEmail === buyer.email && matchedBuyer.status !== 'pending'
+      );
+
+      if (matchReasons.length > 0 && !isStatusChanged) {
+        matchedBuyers.push({
+          buyer,
+          matchReasons,
+        });
+      }
+    });
+
+    // Send the matched buyers along with the vendor data
+    res.send({
+      vendor,
+      matchedBuyers,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Error processing data', details: error });
+  }
+});
 
 
 module.exports = router;
