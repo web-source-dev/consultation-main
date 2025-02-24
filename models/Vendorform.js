@@ -11,7 +11,14 @@ const VendorSchema = new mongoose.Schema({
   selectedIndustries: { type: [String], required: true },
   selectedServices: { type: [String], required: true },
   additionalInfo: { type: String },
-  agreeToTerms: { type: Boolean, required: true }
+  agreeToTerms: { type: Boolean, required: true },
+  matchedBuyers: [
+    {
+      buyer: { type: mongoose.Schema.Types.ObjectId, ref: 'Buyer' },
+      buyerEmail: { type: String},
+      status: { type: String}
+    }
+  ]
 }, {
   timestamps: true,
 });
